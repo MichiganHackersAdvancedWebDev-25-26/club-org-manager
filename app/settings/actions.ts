@@ -7,19 +7,23 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function something_else(input_data) {
   const supabase = await createClient();
-
-  const { user, error } = await supabase.auth.updateUser(
-    {
-        data: {email: input_data.email, full_name: input_data.full_name}
-    })
+  console.log(input_data.email);
+  console.log("Im here");
+  const { data: {user} } = await supabase.auth.getUser();
+  // const { data, error } = await supabase.auth.updateUser(
+  //   {
+  //       data: input_data
+  //   })
 
 
 
   const { data } = await supabase
   .from('users')
-  .update()
+  .upsert({ id: user?.id, data: input_data})
   .select()
   .overrideTypes<Array<{ id: string }>, { merge: false }>()
+
+  // console.log(user?.user_metadata);
 
   revalidatePath("/", "layout");
   redirect("/login");
