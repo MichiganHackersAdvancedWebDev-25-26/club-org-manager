@@ -1,9 +1,11 @@
 import { Faq } from "@/components/FAQ";
 import { Feature } from "@/components/feature";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="min-h-screen p-8 space-y-24">
+    <main className="min-h-screen space-y-24 p-8">
       <section className="flex w-full justify-center">
         <div className="w-full max-w-2xl space-y-6 text-center">
           <h1 className="text-6xl font-semibold">
@@ -41,16 +43,16 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <Feature className="max-w-2xl mx-auto" />
+      <Feature className="mx-auto max-w-2xl" />
       <Faq className="mx-auto max-w-2xl" />
-      <section className="grid grid-cols-1 self-stretch md:grid-cols-2 lg:grid-cols-3"></section>
-      <section className="bg-muted/30 px-4 py-16">
-        <div className="container mx-auto text-center">
-          <div className="text-foreground mb-2 text-3xl font-bold md:text-4xl">
-            150+
-          </div>
-          <div className="text-muted-foreground">Active Clubs</div>
+      <Button asChild className="mx-auto block w-min">
+        <Link href="/login">Join Now</Link>
+      </Button>
+      <section className="bg-muted px-4 py-16 text-center">
+        <div className="text-foreground mb-2 text-3xl font-bold md:text-4xl">
+          150+
         </div>
+        <div className="text-muted-foreground">Active Clubs</div>
       </section>
     </main>
   );
