@@ -17,7 +17,6 @@ const OrganizationPage = () => {
       if (error) {
         console.error("Error fetching clubs:", error);
       } else {
-        console.log(data);
         setOrgs(data);
       }
     };
