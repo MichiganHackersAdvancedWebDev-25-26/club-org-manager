@@ -10,7 +10,13 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
+    if (theme === "light") {
+      setTheme("dark");
+    } else if (theme === "dark") {
+      setTheme("system");
+    } else {
+      setTheme("light");
+    }
   };
 
   return (

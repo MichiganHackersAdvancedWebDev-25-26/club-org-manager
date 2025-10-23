@@ -12,7 +12,7 @@ export async function signout() {
 
   if (error) {
     console.error("Sign out error:", error.message);
-    return;
+    return { error: error.message };
   }
 
   revalidatePath("/", "layout");
