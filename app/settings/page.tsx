@@ -1,5 +1,5 @@
 "use client";
-import { something_else } from "./actions";
+import { update_user, delete_user } from "./actions";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
 import { useState } from 'react'
@@ -13,13 +13,18 @@ export default function SettingsPage() {
   const [fullname, setFullname] = useState(null)
   const [email, setEmail] = useState(null)
 
-  function handleSubmit(e: SubmitEvent){
+  function handleUpdate(e: SubmitEvent){
       e.preventDefault();
       const data = {
           full_name: fullname,
           email: email
       }
-      something_else(data);
+      update_user(data);
+  }
+
+  function handleDelete(e: SubmitEvent){
+      e.preventDefault();
+      delete_user();
   }
   
   
@@ -41,13 +46,13 @@ export default function SettingsPage() {
               Thingy
             </Button>
           </form> */}
-          <form onSubmit={handleSubmit} className="form-widget">
+          <form onSubmit={handleUpdate} className="form-widget">
             <div>
               <label htmlFor="email">Email: </label>
               <input 
                 id="email" 
                 type="text"
-                required
+                disabled 
                 className="border-solid border-black border-2 border rounded-md" 
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -64,6 +69,11 @@ export default function SettingsPage() {
             </div>
             <Button type="submit" variant="outline">
               Submit
+            </Button>
+          </form>
+          <form onSubmit={handleDelete} className="form-widget">
+            <Button type="submit" variant="outline">
+              Delete User
             </Button>
           </form>
         </div>
