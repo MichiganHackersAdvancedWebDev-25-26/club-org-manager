@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { signout } from "@/app/dashboard/actions";
+import { ThemeToggle } from "@/components/theme-toggle";
 // Simple logo component for the navbar
 const Logo = (props: React.SVGAttributes<SVGElement>) => {
   return (
@@ -252,6 +253,7 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
           </div>
           {/* Right side */}
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             {mounted && (
               <>
                 {isLoggedIn ? (
