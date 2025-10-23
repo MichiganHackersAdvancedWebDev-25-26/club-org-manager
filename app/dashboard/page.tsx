@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { getUserClubs } from "./actions";
 import { UserClub } from "@/lib/types";
+import { CreateClubModal } from "./components/CreateClubModal";
 
 export default async function DashboardPage() {
   try {
@@ -18,9 +19,7 @@ export default async function DashboardPage() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold">Your Clubs</h1>
-          <Button asChild>
-            <Link href="/org">Create New Club</Link>
-          </Button>
+          <CreateClubModal />
         </div>
 
         {clubs.length === 0 ? (
@@ -31,9 +30,7 @@ export default async function DashboardPage() {
                 <p className="text-muted-foreground">
                   You haven't joined or created any clubs yet.
                 </p>
-                <Button asChild className="mt-4">
-                  <Link href="/org">Browse Clubs</Link>
-                </Button>
+                <CreateClubModal />
               </div>
             </CardContent>
           </Card>
@@ -87,9 +84,7 @@ export default async function DashboardPage() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold">Your Clubs</h1>
-          <Button asChild>
-            <Link href="/org">Create New Club</Link>
-          </Button>
+          <CreateClubModal />
         </div>
 
         <Card>
@@ -102,9 +97,12 @@ export default async function DashboardPage() {
                 There was an error loading your clubs. Please try refreshing the
                 page.
               </p>
-              <Button asChild className="mt-4">
-                <Link href="/dashboard">Refresh</Link>
-              </Button>
+              <div className="flex gap-2 mt-4">
+                <Button asChild>
+                  <Link href="/dashboard">Refresh</Link>
+                </Button>
+                <CreateClubModal />
+              </div>
             </div>
           </CardContent>
         </Card>

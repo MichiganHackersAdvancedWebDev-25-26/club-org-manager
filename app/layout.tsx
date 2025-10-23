@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/ui/footer";
 import { Navbar } from "@/components/ui/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ToastProvider } from "@/components/ui/toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,9 +35,11 @@ export default function RootLayout({
           defaultTheme="system"
           storageKey="club-org-manager-theme"
         >
-          <Navbar />
-          {children}
-          <Footer />
+          <ToastProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>
