@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Calendar } from "lucide-react";
+import DualButton from "@/components/custom/DualButton";
 
 const OrgCard = ({ org }: { org: Club }) => {
   return (
@@ -23,27 +24,25 @@ const OrgCard = ({ org }: { org: Club }) => {
             {org.name}
           </Link>
         </CardTitle>
-        <CardDescription className="line-clamp-2">
-          {org.description || "No description available"}
-        </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
+      <CardContent className="flex flex-col justify-between flex-1">
+        <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4" />
             <span>Created {new Date(org.created_at).toLocaleDateString()}</span>
           </div>
-
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Users className="h-4 w-4" />
             <span>{Math.floor(Math.random() * 100)} members</span>
           </div>
+          <p>{org.description || "No description available"}</p>
+        </div>
 
-          <div className="pt-4">
-            <Button asChild size="sm" className="w-auto px-6">
-              <Link href={`/org/${org.id}`}>View Club</Link>
-            </Button>
-          </div>
+        <div className="flex justify-between items-center mt-8">
+          <Button asChild size="sm" className="w-24 bg-blue-400 font-semibold">
+            <Link href={`/org/${org.id}`}>View Club</Link>
+          </Button>
+          <DualButton clubId={org.id} />
         </div>
       </CardContent>
     </Card>
