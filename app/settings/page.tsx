@@ -30,7 +30,6 @@ export default function SettingsPage() {
   
   // const supabase = await createClient();
   // const { data: { user } } = await supabase.auth.getUser();
-  // const [ user_data, set_user_data ] = useState(user.user_metadata);
 
 
   return (
@@ -53,6 +52,7 @@ export default function SettingsPage() {
                 id="email" 
                 type="text"
                 disabled 
+                // placeholder= {user?.user_metadata.email}
                 className="border-solid border-black border-2 border rounded-md" 
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -63,7 +63,7 @@ export default function SettingsPage() {
                 id="full_name"
                 type="text"
                 className="border-solid border-black border-2 border rounded-md"
-                required
+                // required
                 onChange={(e) => setFullname(e.target.value)}
               />
             </div>
