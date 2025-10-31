@@ -5,11 +5,6 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
 
-function is_null(obj)
-{
- return obj == null || obj == undefined;
-}
-
 export async function update_user(input_data) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -19,8 +14,8 @@ export async function update_user(input_data) {
   //       data: input_data
   //   })
 
-  if (is_null(input_data.email)) input_data.email = user.user_metadata.email;
-  if (is_null(input_data.name)) input_data.name = user.user_metadata.full_name;
+  if (!input_data.email) input_data.email = user.user_metadata.email;
+  if (!input_data.name) input_data.name = user.user_metadata.full_name;
 
   // const { data } = await supabase
   // .from('users')
@@ -51,11 +46,12 @@ export async function delete_user() {
   const supabase = await createClient();
   const { data: {user} } = await supabase.auth.getUser();
 
-  const { error } = await supabase.auth.signOut();
+  if (!user) redirect("/login");
+
+  const { error } =  await supabase.auth.admin.deleteUser(user.id);
   if (error) {
     return { error: error.message };
   }
-  await supabase.auth.admin.deleteUser(user.id);
 
   // console.log(user);
 
@@ -64,11 +60,12 @@ export async function delete_user() {
   // .select();
   // console.log(data);
 
-  // const response = await supabase
-  // .from('users')
-  // .delete()
-  // .eq('id', user.id)
-  // .select();
+  const response = await supabase
+  .from('users')
+  .delete()
+  .eq('id', user.id)
+  .select();
+  await supabase.auth.signOut();
 
   // console.log(response);
   
