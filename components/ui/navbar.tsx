@@ -103,6 +103,7 @@ const defaultNavigationLinks: Navbar01NavLink[] = [
   { href: "/", label: "Home", active: true },
   { href: "/faq", label: "FAQ" },
   { href: "/features", label: "Features" },
+  { href: "/org", label: "Discover" }
 ];
 export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
   (
