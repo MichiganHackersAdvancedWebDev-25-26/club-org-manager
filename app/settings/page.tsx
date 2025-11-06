@@ -108,7 +108,7 @@ export default function SettingsPage() {
               <input
                 id="full_name"
                 type="text"
-                className="border-solid border-black border-2 border rounded-md"
+                className="border-solid border-black border-2 rounded-md"
                 // required
                 placeholder={is_disabled['full_name']?'Disabled': fullName}
                 onChange={(e) => setFullname(e.target.value)}
