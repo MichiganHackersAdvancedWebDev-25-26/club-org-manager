@@ -20,6 +20,8 @@ const LeaveButton = ({
       } else {
         console.error("Error leaving club:", res.error);
       }
+    } catch (error) {
+      console.error("Error leaving club:", error);
     }
   };
 

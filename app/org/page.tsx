@@ -11,6 +11,9 @@ const SupaClient = createClient();
 const OrganizationPage = () => {
   const [orgs, setOrgs] = useState<Club[]>([]);
   const [loading, setLoading] = useState(true);
+  const [membershipLoading, setMembershipLoading] = useState(true);
+  const [memberships, setMemberships] = useState<Set<string>>(new Set());
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,20 +26,39 @@ const OrganizationPage = () => {
         } else {
           setOrgs(data || []);
         }
+
+        const {
+          data: { user },
+        } = await SupaClient.auth.getUser();
+        setIsLoggedIn(!!user);
+
+        if (user) {
+          const { data: userMemberships } = await SupaClient.from("memberships")
+            .select("club_id")
+            .eq("user_id", user.id);
+
+          if (userMemberships) {
+            setMemberships(new Set(userMemberships.map((m) => m.club_id)));
+          }
+        }
       } catch (error) {
-        console.error("Error fetching clubs:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
+        setMembershipLoading(false);
       }
     };
     fetchData();
   }, []);
 
-  if (loading) {
+  if (loading || membershipLoading) {
     return (
       <div className="min-h-screen p-8">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">All Clubs</h1>
+          <p className="text-muted-foreground mb-4">
+            Loading clubs and membership status...
+          </p>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="h-48 bg-muted animate-pulse rounded-lg" />
@@ -46,6 +68,28 @@ const OrganizationPage = () => {
       </div>
     );
   }
+
+  const refreshMemberships = async () => {
+    setMembershipLoading(true);
+    try {
+      const {
+        data: { user },
+      } = await SupaClient.auth.getUser();
+      if (user) {
+        const { data: userMemberships } = await SupaClient.from("memberships")
+          .select("club_id")
+          .eq("user_id", user.id);
+
+        if (userMemberships) {
+          setMemberships(new Set(userMemberships.map((m) => m.club_id)));
+        }
+      }
+    } catch (error) {
+      console.error("Error refreshing memberships:", error);
+    } finally {
+      setMembershipLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen p-8">
@@ -67,7 +111,13 @@ const OrganizationPage = () => {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {orgs.map((org) => (
-              <OrgCard key={org.id} org={org} />
+              <OrgCard
+                key={org.id}
+                org={org}
+                isLoggedIn={isLoggedIn}
+                isMember={memberships.has(org.id)}
+                onMembershipChange={refreshMemberships}
+              />
             ))}
           </div>
         )}

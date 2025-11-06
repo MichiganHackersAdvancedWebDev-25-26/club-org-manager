@@ -12,7 +12,17 @@ import { Button } from "@/components/ui/button";
 import { Users, Calendar } from "lucide-react";
 import DualButton from "@/components/custom/DualButton";
 
-const OrgCard = ({ org }: { org: Club }) => {
+const OrgCard = ({ 
+  org, 
+  isLoggedIn, 
+  isMember, 
+  onMembershipChange 
+}: { 
+  org: Club;
+  isLoggedIn: boolean;
+  isMember: boolean;
+  onMembershipChange: () => void;
+}) => {
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader>
@@ -42,7 +52,12 @@ const OrgCard = ({ org }: { org: Club }) => {
           <Button asChild size="sm" className="w-24 bg-blue-400 font-semibold">
             <Link href={`/org/${org.id}`}>View Club</Link>
           </Button>
-          <DualButton clubId={org.id} />
+          <DualButton 
+            clubId={org.id}
+            isLoggedIn={isLoggedIn}
+            isMember={isMember}
+            onChange={onMembershipChange}
+          />
         </div>
       </CardContent>
     </Card>
