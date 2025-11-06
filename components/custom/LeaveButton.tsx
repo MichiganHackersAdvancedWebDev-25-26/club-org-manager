@@ -14,10 +14,12 @@ const LeaveButton = ({
     try {
       const res = await leaveClub(clubId);
       console.log(res);
-      console.log("Left club:", clubId);
-      onChange();
-    } catch (error) {
-      console.error("Error leaving club:", error);
+      if (!res.error) {
+        console.log("Left club:", clubId);
+        onChange();
+      } else {
+        console.error("Error leaving club:", res.error);
+      }
     }
   };
 
