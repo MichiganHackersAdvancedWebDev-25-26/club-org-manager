@@ -17,7 +17,6 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { signout } from "@/app/dashboard/actions";
 import { ThemeToggle } from "@/components/theme-toggle";
-// Simple logo component for the navbar
 const Logo = (props: React.SVGAttributes<SVGElement>) => {
   return (
     <svg
@@ -49,7 +48,6 @@ const Logo = (props: React.SVGAttributes<SVGElement>) => {
     </svg>
   );
 };
-// Hamburger icon component
 const HamburgerIcon = ({
   className,
   ...props
@@ -81,7 +79,6 @@ const HamburgerIcon = ({
     />
   </svg>
 );
-// Types
 export interface Navbar01NavLink {
   href: string;
   label: string;
@@ -98,12 +95,11 @@ export interface Navbar01Props extends React.HTMLAttributes<HTMLElement> {
   onSignInClick?: () => void;
   onCtaClick?: () => void;
 }
-// Default navigation links
 const defaultNavigationLinks: Navbar01NavLink[] = [
   { href: "/", label: "Home", active: true },
   { href: "/faq", label: "FAQ" },
   { href: "/features", label: "Features" },
-  { href: "/org", label: "Discover" }
+  { href: "/org", label: "Discover" },
 ];
 export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
   (
@@ -128,10 +124,9 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
     const containerRef = useRef<HTMLElement>(null);
     useEffect(() => {
       setMounted(true);
+      const supabase = createClient();
 
-      // Check authentication status
       const checkAuth = async () => {
-        const supabase = createClient();
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -140,10 +135,16 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
 
       checkAuth();
 
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setIsLoggedIn(!!session?.user);
+      });
+
       const checkWidth = () => {
         if (containerRef.current) {
           const width = containerRef.current.offsetWidth;
-          setIsMobile(width < 768); // 768px is md breakpoint
+          setIsMobile(width < 768);
         }
       };
       checkWidth();
@@ -153,9 +154,9 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
       }
       return () => {
         resizeObserver.disconnect();
+        subscription.unsubscribe();
       };
     }, []);
-    // Combine refs
     const combinedRef = React.useCallback(
       (node: HTMLElement | null) => {
         containerRef.current = node;
@@ -177,9 +178,7 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
         {...props}
       >
         <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between gap-4">
-          {/* Left side */}
           <div className="flex items-center gap-2">
-            {/* Mobile menu trigger */}
             {isMobile && (
               <Popover>
                 <PopoverTrigger asChild>
@@ -198,7 +197,6 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
                         <NavigationMenuItem key={index} className="w-full">
                           <Link
                             href={link.href}
-                            //onClick={(e) => e.preventDefault()}
                             className={cn(
                               "flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer no-underline",
                               link.active
@@ -215,11 +213,9 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
                 </PopoverContent>
               </Popover>
             )}
-            {/* Main nav */}
             <div className="flex items-center gap-6">
               <Link
                 href={logoHref}
-                //onClick={(e) => e.preventDefault()}
                 className="flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer"
               >
                 <div className="text-2xl">{logo}</div>
@@ -227,7 +223,6 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
                   shadcn.io
                 </span>
               </Link>
-              {/* Navigation menu */}
               {!isMobile && (
                 <NavigationMenu className="flex">
                   <NavigationMenuList className="gap-1">
@@ -235,7 +230,6 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
                       <NavigationMenuItem key={index}>
                         <Link
                           href={link.href}
-                          //onClick={(e) => e.preventDefault()}
                           className={cn(
                             "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer no-underline",
                             link.active
@@ -252,7 +246,6 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
               )}
             </div>
           </div>
-          {/* Right side */}
           <div className="flex items-center gap-3">
             <ThemeToggle />
             {mounted && (

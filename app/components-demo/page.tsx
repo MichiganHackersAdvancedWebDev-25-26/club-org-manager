@@ -24,7 +24,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-// Zod schema for form validation
 const formSchema = z.object({
   email: z.email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters long"),
@@ -48,7 +47,6 @@ export default function ComponentsDemo() {
     <div className="p-10 max-w-3xl mx-auto space-y-12">
       <h1 className="text-3xl font-bold mb-8">Shadcn/UI Components Demo</h1>
 
-      {/* Buttons Showcase */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Buttons</h2>
         <div className="flex gap-4">
@@ -59,13 +57,11 @@ export default function ComponentsDemo() {
         </div>
       </section>
 
-      {/* Input Showcase */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Input Fields</h2>
         <Input placeholder="Type something..." />
       </section>
 
-      {/* Tabs Showcase */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Tabs</h2>
         <Tabs defaultValue="account" className="w-[400px]">
@@ -78,7 +74,6 @@ export default function ComponentsDemo() {
         </Tabs>
       </section>
 
-      {/* Dialog Showcase */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Dialog</h2>
         <Dialog>
@@ -99,7 +94,6 @@ export default function ComponentsDemo() {
         </Dialog>
       </section>
 
-      {/* Form Showcase */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Form with Validation</h2>
         <Form {...form}>

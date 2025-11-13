@@ -46,10 +46,8 @@ export function CreateClubModal() {
       } else if (result.success) {
         showToast("Club created successfully!", "success");
         setOpen(false);
-        // Reset form
         setName("");
         setDescription("");
-        // Redirect to the new club's dashboard
         window.location.href = `/dashboard/${result.clubId}`;
       }
     } catch (error) {

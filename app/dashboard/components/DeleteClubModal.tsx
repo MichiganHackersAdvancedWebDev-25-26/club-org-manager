@@ -51,7 +51,6 @@ export function DeleteClubModal({
         setOpen(false);
         setConfirmationText("");
         onSuccess?.();
-        // Redirect to dashboard
         window.location.href = "/dashboard";
       }
     } catch (error) {

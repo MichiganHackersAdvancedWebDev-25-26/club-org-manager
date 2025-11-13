@@ -21,13 +21,11 @@ export default function ErrorPage() {
   const errorDescription = searchParams.get("error_description");
 
   useEffect(() => {
-    // If no error parameters, redirect to home
     if (!error) {
       router.push("/");
       return;
     }
 
-    // Check if user is already logged in
     const checkAuth = async () => {
       const supabase = createClient();
       const {
@@ -35,7 +33,6 @@ export default function ErrorPage() {
       } = await supabase.auth.getUser();
 
       if (user) {
-        // If logged in, redirect to dashboard
         router.push("/dashboard");
       }
     };
@@ -43,7 +40,6 @@ export default function ErrorPage() {
     checkAuth();
   }, [error, router]);
 
-  // Don't render anything if redirecting
   if (!error) {
     return null;
   }
