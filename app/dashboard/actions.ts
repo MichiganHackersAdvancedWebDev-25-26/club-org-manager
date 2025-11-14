@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { Club, UserClub } from "@/lib/types";
+import { Club, UserClub, ClubUser, Event } from "@/lib/types";
 
 export async function signout() {
   const supabase = await createClient();
@@ -202,4 +202,58 @@ export async function getClub(id: string): Promise<Club | null> {
   }
 
   return data as Club;
+}
+
+export async function getClubUsers(clubId: string): Promise<ClubUser[]> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    console.error("Error getting user:", userError);
+    return [];
+  }
+
+  const { data: memberships, error: membershipsError } = await supabase
+    .from("memberships")
+    .select(
+      `
+      role,
+      joined_at,
+      users!inner (
+        id,
+        name,
+      )
+    `
+    )
+    .eq("club_id", clubId)
+    .order("joined_at", { ascending: false });
+
+  if (membershipsError) {
+    console.error("Error fetching memberships:", membershipsError);
+    return [];
+  }
+
+  const ClubUsers: ClubUser[] =
+    memberships?.map((membership: any) => ({
+      id: membership.users.id,
+      name: membership.users.name,
+      role: membership.role as "member" | "officer" | "admin",
+      joined_at: membership.joined_at,
+    })) || [];
+
+  return ClubUsers;
+}
+
+export async function getEvents(clubId: string): Promise<Event[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("club_id", clubId);
+  if (error) console.error(error);
+  return data;
 }
