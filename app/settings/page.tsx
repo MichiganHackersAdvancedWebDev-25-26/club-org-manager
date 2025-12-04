@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { createClient } from "@/utils/supabase/client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 interface FormErrors {
@@ -35,27 +35,35 @@ export default function SettingsPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
-  useEffect(() => {
-    async function loadUser() {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+  const loadUserData = useCallback(async () => {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-      if (!user) {
-        router.push("/login");
-        return;
-      }
-
-      const fullName = user.user_metadata?.full_name || "";
-      const nameParts = fullName.split(" ");
-      setFirstName(nameParts[0] || "");
-      setLastName(nameParts.slice(1).join(" ") || "");
-      setEmail(user.email || "");
-      setIsLoading(false);
+    if (!user) {
+      router.push("/login");
+      return;
     }
-    loadUser();
+
+    // Fetch from users table (source of truth)
+    const { data: userData } = await supabase
+      .from("users")
+      .select("full_name")
+      .eq("id", user.id)
+      .single();
+
+    const fullName = userData?.full_name || "";
+    const nameParts = fullName.split(" ");
+    setFirstName(nameParts[0] || "");
+    setLastName(nameParts.slice(1).join(" ") || "");
+    setEmail(user.email || "");
+    setIsLoading(false);
   }, [router]);
+
+  useEffect(() => {
+    loadUserData();
+  }, [loadUserData]);
 
   const validateForm = (): boolean => {
     const formErrors: FormErrors = {};
@@ -98,9 +106,11 @@ export default function SettingsPage() {
         setErrors({ general: result.error });
       } else {
         setSuccessMessage("Profile updated successfully!");
+        // Reload user data to reflect changes
+        await loadUserData();
         setTimeout(() => setSuccessMessage(""), 3000);
       }
-    } catch (error) {
+    } catch {
       setErrors({ general: "An unexpected error occurred" });
     } finally {
       setIsSubmitting(false);
@@ -115,7 +125,7 @@ export default function SettingsPage() {
         setErrors({ general: result.error });
         setDeleteDialogOpen(false);
       }
-    } catch (error) {
+    } catch {
       setErrors({ general: "Failed to delete account" });
       setDeleteDialogOpen(false);
     } finally {
