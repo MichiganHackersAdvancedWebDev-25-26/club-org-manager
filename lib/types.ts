@@ -16,4 +16,31 @@ interface UserClub {
   joined_at: string;
 }
 
-export type { Club, UserClub };
+interface ClubUser {
+  id: string;
+  name: string;
+  role: "member" | "officer" | "admin";
+  joined_at: string;
+}
+
+interface Event {
+  id: string;
+  club_id: string;
+  title: string;
+  description: string;
+  start_time: Date;
+  end_time: Date;
+  location: string;
+  created_at: Date;
+}
+
+interface Announcement {
+  id: string;
+  club_id: string;
+  posted_by: string;
+  title: string;
+  content: string;
+  created_at: string;
+}
+
+export type { Club, UserClub, ClubUser, Event, Announcement };
