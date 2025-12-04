@@ -1,10 +1,14 @@
-import React from "react";
+interface DescriptionSectionProps {
+  description: string | null | undefined;
+}
 
-const DescriptionSection = ({
-  description,
-}: {
-  description: string | undefined;
-}) => {
+const DescriptionSection = ({ description }: DescriptionSectionProps) => {
+  if (!description) {
+    return (
+      <p className="text-muted-foreground italic">No description provided</p>
+    );
+  }
+
   return <p className="text-muted-foreground">{description}</p>;
 };
 

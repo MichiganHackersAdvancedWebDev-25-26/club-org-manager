@@ -38,8 +38,9 @@ interface Announcement {
   id: string;
   club_id: string;
   posted_by: string;
+  title: string;
   content: string;
-  createdAt: Date;
+  created_at: string;
 }
 
 export type { Club, UserClub, ClubUser, Event, Announcement };

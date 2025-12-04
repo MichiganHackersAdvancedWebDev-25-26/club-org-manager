@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { Club, UserClub, ClubUser, Event } from "@/lib/types";
+import { Club, UserClub, ClubUser, Event, Announcement } from "@/lib/types";
 
 export async function signout() {
   const supabase = await createClient();
@@ -225,7 +225,7 @@ export async function getClubUsers(clubId: string): Promise<ClubUser[]> {
       joined_at,
       users!inner (
         id,
-        name,
+        full_name
       )
     `
     )
@@ -240,7 +240,7 @@ export async function getClubUsers(clubId: string): Promise<ClubUser[]> {
   const ClubUsers: ClubUser[] =
     memberships?.map((membership: any) => ({
       id: membership.users.id,
-      name: membership.users.name,
+      name: membership.users.full_name,
       role: membership.role as "member" | "officer" | "admin",
       joined_at: membership.joined_at,
     })) || [];
@@ -253,7 +253,27 @@ export async function getEvents(clubId: string): Promise<Event[]> {
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .eq("club_id", clubId);
-  if (error) console.error(error);
-  return data;
+    .eq("club_id", clubId)
+    .order("start_time", { ascending: true });
+  if (error) {
+    console.error(error);
+    return [];
+  }
+  return data || [];
+}
+
+export async function getAnnouncements(
+  clubId: string
+): Promise<Announcement[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("announcements")
+    .select("*")
+    .eq("club_id", clubId)
+    .order("created_at", { ascending: false });
+  if (error) {
+    console.error(error);
+    return [];
+  }
+  return data || [];
 }

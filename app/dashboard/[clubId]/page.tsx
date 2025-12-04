@@ -1,82 +1,54 @@
-"use client";
-
-import { getClub, getEvents, getClubUsers } from "../actions";
+import { getClub, getEvents, getClubUsers, getAnnouncements } from "../actions";
 import { ClubSettings } from "./components/ClubSettings";
-import { JSX, useEffect, useState } from "react";
 import MemberSection from "./components/MemberSection";
 import EventSection from "./components/EventSection";
 import AnnouncementSection from "./components/AnnouncementSection";
 import DescriptionSection from "./components/DescriptionSection";
-import { Club, ClubUser, Event, Announcement, UserClub } from "@/lib/types";
-import { useParams } from "next/navigation";
+import { notFound } from "next/navigation";
 
 type Section = {
   header: string;
-  content: JSX.Element;
+  content: React.ReactNode;
 };
 
-const ClubDashboardPage = () => {
-  const { clubId } = useParams<{ clubId: string }>();
+interface ClubDashboardPageProps {
+  params: Promise<{ clubId: string }>;
+}
 
-  const [club, setClub] = useState<Club | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [events, setEvents] = useState<Event[]>([]);
-  const [members, setMembers] = useState<ClubUser[]>([]);
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+export default async function ClubDashboardPage({
+  params,
+}: ClubDashboardPageProps) {
+  const { clubId } = await params;
 
-  const fetchClubByClubId = async (clubId: string) => {
-    try {
-      const data = await getClub(clubId);
-      if (data) {
-        setClub(data);
-        setIsLoading(false);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [club, events, members, announcements] = await Promise.all([
+    getClub(clubId),
+    getEvents(clubId),
+    getClubUsers(clubId),
+    getAnnouncements(clubId),
+  ]);
 
-  const fetchEventsByClubId = async (clubId: string) => {
-    const data = await getEvents(clubId);
-    setEvents(data);
-  };
-
-  const fetchMembersByClubId = async (clubId: string) => {
-    const data = await getClubUsers(clubId);
-    setMembers(data);
-  };
-
-  useEffect(() => {
-    const getClub = async () => {
-      await fetchClubByClubId(clubId);
-    };
-    getClub();
-  }, []);
-  useEffect(() => {
-    fetchEventsByClubId(clubId);
-  }, [club]);
-  useEffect(() => {
-    fetchMembersByClubId(clubId);
-  }, [club]);
-
-  console.log(members);
+  if (!club) {
+    notFound();
+  }
 
   const sections: Section[] = [
     {
       header: "Overview",
-      content: <DescriptionSection description={club?.description} />,
+      content: <DescriptionSection description={club.description} />,
     },
     {
       header: "Announcements",
       content: <AnnouncementSection announcements={announcements} />,
     },
-    { header: "Events", content: <EventSection events={events} /> },
-    { header: "Members", content: <MemberSection members={members} /> },
+    {
+      header: "Events",
+      content: <EventSection events={events} />,
+    },
+    {
+      header: "Members",
+      content: <MemberSection members={members} />,
+    },
   ];
-
-  if (isLoading) return <div>Loading...</div>;
-  if (!club) return <div>Club not found</div>;
 
   return (
     <div className="space-y-6">
@@ -99,6 +71,4 @@ const ClubDashboardPage = () => {
       <ClubSettings clubId={clubId} clubName={club.name} />
     </div>
   );
-};
-
-export default ClubDashboardPage;
+}
