@@ -20,31 +20,29 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const Logo = (props: React.SVGAttributes<SVGElement>) => {
   return (
     <svg
-      width="1em"
-      height="1em"
-      viewBox="0 0 324 323"
-      fill="currentColor"
+      width="1.2em"
+      height="1.2em"
+      viewBox="0 0 100 100"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <rect
-        x="88.1023"
-        y="144.792"
-        width="151.802"
-        height="36.5788"
-        rx="18.2894"
-        transform="rotate(-38.5799 88.1023 144.792)"
-        fill="currentColor"
-      />
-      <rect
-        x="85.3459"
-        y="244.537"
-        width="151.802"
-        height="36.5788"
-        rx="18.2894"
-        transform="rotate(-38.5799 85.3459 244.537)"
-        fill="currentColor"
-      />
+      <defs>
+        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#6366f1" />
+          <stop offset="50%" stopColor="#8b5cf6" />
+          <stop offset="100%" stopColor="#d946ef" />
+        </linearGradient>
+      </defs>
+      {/* Main circle representing community */}
+      <circle cx="50" cy="50" r="42" stroke="url(#logoGradient)" strokeWidth="6" fill="none" />
+      {/* Inner connected people symbols */}
+      <circle cx="35" cy="42" r="8" fill="url(#logoGradient)" />
+      <circle cx="65" cy="42" r="8" fill="url(#logoGradient)" />
+      <circle cx="50" cy="62" r="8" fill="url(#logoGradient)" />
+      {/* Connection lines */}
+      <path d="M35 50 L50 54 L65 50" stroke="url(#logoGradient)" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M42 56 L50 62 L58 56" stroke="url(#logoGradient)" strokeWidth="3" fill="none" strokeLinecap="round" />
     </svg>
   );
 };
@@ -216,11 +214,11 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar01Props>(
             <div className="flex items-center gap-6">
               <Link
                 href={logoHref}
-                className="flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer"
+                className="flex items-center space-x-2 hover:opacity-90 transition-opacity cursor-pointer"
               >
-                <div className="text-2xl">{logo}</div>
-                <span className="hidden font-bold text-xl sm:inline-block">
-                  shadcn.io
+                <div className="text-3xl">{logo}</div>
+                <span className="hidden font-bold text-xl sm:inline-block bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
+                  ClubOrg
                 </span>
               </Link>
               {!isMobile && (
